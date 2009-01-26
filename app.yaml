@@ -4,7 +4,9 @@ runtime: python
 api_version: 1
 
 handlers:
-- url: .*
-  script: main.py
 - url: /test.*
   script: gaeunit.py
+
+- url: .*
+  script: main.py
+
