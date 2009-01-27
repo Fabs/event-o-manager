@@ -108,6 +108,29 @@ class EventTest(unittest.TestCase):
     subscription.delete()
     event.delete()
 
+  def testCountSubscriptions(self):
+    event = model.Event(
+        name='TestEvent',
+        description='This is a test event.',
+        slots=1
+    )
+    event.put()
+    subscription = model.Subscription(
+        name='TestSubscription',
+        email='test@gmail.com'
+    )
+    event.add_subscription(subscription)
+    self.assertEquals(event.count_subscriptions(), 1)
+    second_subscription = model.Subscription(
+        name='SecondSubscription',
+        email='waiting@gmail.com',
+    )
+    event.add_subscription(second_subscription)
+    self.assertEquals(event.count_subscriptions(), 2)
+    second_subscription.delete()
+    subscription.delete()
+    event.delete()
+
         
 class SubscriptionTest(unittest.TestCase):
   def testSimplePutAndGet(self):
