@@ -5,9 +5,10 @@ class EventTest(unittest.TestCase):
 
   def setUp(self):
     self.event = model.Event()
+    self.event.put()
 
   def tearDown(self):
-    pass
+    del self.event
 
   def testShouldPass(self):
     pass
@@ -16,10 +17,14 @@ class EventTest(unittest.TestCase):
     subscription = model.Subscription()
     subscription.name = "Teste"
     subscription.email = "teste@gmail.com"
-    self.event.put()
-    subscription.event = self.event
-    subscription.put()
+    self.event.add_subscription(subscription)
     assert subscription.key() == self.event.get_all_subscriptions()[0].key()
+    
+  def testAddSubscription(self):
+    self.event.slots = 1
+    subscription1 = model.Subscription()
+    self.event.add_subscription(subscription1)
+    assert subscription1.event.key() == self.event.key()
     
 class SubscriptionTest(unittest.TestCase):
 
