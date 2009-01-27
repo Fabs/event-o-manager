@@ -57,7 +57,7 @@ class EventTest(unittest.TestCase):
     subscription.delete()
     event.delete()
 
-  def testSlotsLimit(self):
+  def testGetAllEnrolledAndWaiting(self):
     event = model.Event(
         name='TestEvent',
         description='This is a test event.',
@@ -71,9 +71,38 @@ class EventTest(unittest.TestCase):
     event.add_subscription(subscription)
     second_subscription = model.Subscription(
         name='SecondSubscription',
-        email='error@gmail.com',
+        email='waiting@gmail.com',
     )
-    self.assertRaises(model.SlotLimitException,
+    event.add_subscription(second_subscription)
+    enrolled = event.get_all_enrolled()
+    self.assertEquals(len(enrolled), 1)
+    first = enrolled[0]
+    self.assertEquals(subscription.key(), first.key())
+    waiting = event.get_all_waiting()
+    self.assertEquals(len(waiting), 1)
+    second = waiting[0]
+    self.assertEquals(second_subscription.key(), second.key())
+    second_subscription.delete()
+    subscription.delete()
+    event.delete()
+
+  def testRepeatedSubscription(self):
+    event = model.Event(
+        name='TestEvent',
+        description='This is a test event.',
+        slots=1
+    )
+    event.put()
+    subscription = model.Subscription(
+        name='TestSubscription',
+        email='test@gmail.com'
+    )
+    event.add_subscription(subscription)
+    second_subscription = model.Subscription(
+        name='SecondSubscription',
+        email='test@gmail.com',
+    )
+    self.assertRaises(model.AlreadySubscribedException,
                       event.add_subscription,
                       second_subscription)
     subscription.delete()

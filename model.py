@@ -14,7 +14,7 @@ class Event(db.Model):
         return subscriptions
         
     def get_all_waiting(self):
-        subscriptions = Subscription.gql("WHERE event = :1 ORDER BY date",self.key()).fetch(1000, self.slots    date = db.DateTimeProperty(auto_now_add=True))
+        subscriptions = Subscription.gql("WHERE event = :1 ORDER BY date",self.key()).fetch(1000, self.slots)
         return subscriptions
         
     def add_subscription(self, subscription):
@@ -31,6 +31,7 @@ class Subscription(db.Model):
     name = db.StringProperty()
     email = db.EmailProperty()
     event = db.ReferenceProperty(Event)
+    date = db.DateTimeProperty(auto_now_add=True)
 
 class AlreadySubscribedException(Exception):
     pass
