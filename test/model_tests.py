@@ -25,5 +25,36 @@ class EventTest(unittest.TestCase):
     self.assertEquals(event.description, verify_event.description)
     self.assertEquals(event.slots, verify_event.slots)
     self.assertEquals(event.key(), verify_event.key())
+    event.delete()
+
+  def testAddSubscription(self):
+    event = model.Event(
+        name='TestEvent',
+        description='This is a test event.',
+        slots=1
+    )
+    event.put()
+    subscription = model.Subscription()
+    event.add_subscription(subscription)
+    self.assertEquals(subscription.event.key(), event.key())
+    subscription.delete()
+    event.delete()
+
+  def testGetSubscriptions(self):
+    event = model.Event(
+        name='TestEvent',
+        description='This is a test event.',
+        slots=1
+    )
+    event.put()
+    subscription = model.Subscription(
+        name='TestSubscription',
+        email='test@gmail.com'
+    )
+    event.add_subscription(subscription)
+    self.assertEquals(subscription.key(), 
+                      event.get_all_subscriptions()[0].key())
+    subscription.delete()
+    event.delete()
 
         
