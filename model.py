@@ -11,11 +11,11 @@ class Event(db.Model):
         return subscriptions
         
     def get_all_enrolled(self):
-        subscriptions = Subscription.gql("WHERE event = :1 ORDER date",self.key())fetch(self.slots)
+        subscriptions = Subscription.gql("WHERE event = :1 ORDER BY date",self.key()).fetch(self.slots)
         return subscriptions
         
     def get_all_waiting(self):
-        subscriptions = Subscription.gql("WHERE event = :1 ORDER date",self.key()).fetch(1000, self.slots)
+        subscriptions = Subscription.gql("WHERE event = :1 ORDER BY date",self.key()).fetch(1000, self.slots)
         return subscriptions
         
     def add_subscription(self, subscription):
