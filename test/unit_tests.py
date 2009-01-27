@@ -21,10 +21,17 @@ class EventTest(unittest.TestCase):
     assert subscription.key() == self.event.get_all_subscriptions()[0].key()
     
   def testAddSubscription(self):
-    self.event.slots = 1
     subscription1 = model.Subscription()
     self.event.add_subscription(subscription1)
     assert subscription1.event.key() == self.event.key()
+    
+  def testSlotsLimit(self):
+    self.event.slots = 1
+    subscription1 = model.Subscription()
+    self.event.add_subscription(subscription1)
+    subscription2 = model.Subscription()
+    self.assertRaises(model.SlotLimitException, self.event.add_subscription, subscription2)
+    
     
 class SubscriptionTest(unittest.TestCase):
 
