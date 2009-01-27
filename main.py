@@ -14,25 +14,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+import logging,os
+
+from google.appengine.ext.webapp import util
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+
+import logging
+import django.core.handlers.wsgi
+import django.core.signals
+import django.db
+import django.dispatch.dispatcher
 
 
-import wsgiref.handlers
+def log_exception(*args, **kwds):
+    logging.exception('Exception in request:')
 
+# Log errors.
+django.dispatch.dispatcher.connect(
+    log_exception, django.core.signals.got_request_exception)
 
-from google.appengine.ext import webapp
-
-
-class MainHandler(webapp.RequestHandler):
-
-  def get(self):
-    self.response.out.write('Hello world!')
+# Unregister the rollback event handler.
+django.dispatch.dispatcher.disconnect(
+    django.db._rollback_on_exception,
+    django.core.signals.got_request_exception)
 
 
 def main():
-  application = webapp.WSGIApplication([('/', MainHandler)],
-                                       debug=True)
-  wsgiref.handlers.CGIHandler().run(application)
+    application = django.core.handlers.wsgi.WSGIHandler()
+    util.run_wsgi_app(application)
 
 
 if __name__ == '__main__':
-  main()
+    main()
