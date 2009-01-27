@@ -57,6 +57,28 @@ class EventTest(unittest.TestCase):
     subscription.delete()
     event.delete()
 
+  def testSlotsLimit(self):
+    event = model.Event(
+        name='TestEvent',
+        description='This is a test event.',
+        slots=1
+    )
+    event.put()
+    subscription = model.Subscription(
+        name='TestSubscription',
+        email='test@gmail.com'
+    )
+    event.add_subscription(subscription)
+    second_subscription = model.Subscription(
+        name='SecondSubscription',
+        email='error@gmail.com',
+    )
+    self.assertRaises(model.SlotLimitException,
+                      event.add_subscription,
+                      second_subscription)
+    subscription.delete()
+    event.delete()
+
         
 class SubscriptionTest(unittest.TestCase):
   def testSimplePutAndGet(self):
