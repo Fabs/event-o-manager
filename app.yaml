@@ -4,9 +4,15 @@ runtime: python
 api_version: 1
 
 handlers:
+  #Static Pages
+- url: /static
+  static_dir: static
+
+  #Test Suite
 - url: /test.*
   script: gaeunit.py
 
+  #Django Maing File
 - url: .*
   script: main.py
 
