@@ -1,5 +1,6 @@
 import os
-ROOT_URLCONF='urls'
+
+ROOT_URLCONF = 'urls'
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',

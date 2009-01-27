@@ -20,6 +20,10 @@ from google.appengine.ext.webapp import util
 
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
+#WorkArround 
+from django.conf import settings
+settings._target = None 
+
 import logging
 import django.core.handlers.wsgi
 import django.core.signals
