@@ -58,3 +58,25 @@ class EventTest(unittest.TestCase):
     event.delete()
 
         
+class SubscriptionTest(unittest.TestCase):
+  def testSimplePutAndGet(self):
+    event = model.Event(
+        name='TestEvent',
+        description='Simple test description.',
+        slots=10
+    )
+    event.put()
+    subscription = model.Subscription(
+        name='TestSubscription',
+        email='test@gmail.com',
+        event=event
+    )
+    subscription.put()
+    query = model.Subscription.gql('WHERE email = :1', 'test@gmail.com')
+    results = query.fetch(1)
+    verify_subscription = results[0]
+    self.assertEquals(subscription.name, verify_subscription.name)
+    self.assertEquals(subscription.email, verify_subscription.email)
+    self.assertEquals(subscription.key(), verify_subscription.key())
+    subscription.delete()
+    event.delete()
